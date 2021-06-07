@@ -16,7 +16,7 @@ import com.android.billingclient.api.BillingClient.SkuType
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
-import java.util.*
+import java.util.Date
 
 class DebugBillingActivity : AppCompatActivity() {
 
@@ -55,14 +55,16 @@ class DebugBillingActivity : AppCompatActivity() {
     price = findViewById(R.id.price)
     buyButton = findViewById(R.id.buy)
 
-    val sku = intent.getStringExtra(REQUEST_SKU)
-    skuType = intent.getStringExtra(REQUEST_SKU_TYPE).orEmpty()
+    val skuDetailsJson = intent.getStringArrayExtra(REQUEST_SKU_DETAILS)
+    val skuDetails: SkuDetails? = skuDetailsJson?.map { SkuDetails(it) }.orEmpty().getOrNull(0)
+    val sku = skuDetails?.sku.orEmpty()
+    skuType = skuDetails?.type.orEmpty()
     val items = BillingStore.defaultStore(this)
-        .getSkuDetails(SkuDetailsParams.newBuilder()
-            .setType(skuType)
-            .setSkusList(listOf(sku))
-            .build())
-        .associate { it.sku to it }
+            .getSkuDetails(SkuDetailsParams.newBuilder()
+                    .setType(skuType)
+                    .setSkusList(listOf(sku))
+                    .build())
+            .associateBy { it.sku }
     val it = items[sku]
     if (it == null) {
       Log.e("DBX", "Unknown $skuType sku: $sku")
