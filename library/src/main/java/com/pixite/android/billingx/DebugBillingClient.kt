@@ -17,8 +17,11 @@ import com.android.billingclient.api.InternalPurchasesResult
 import com.android.billingclient.api.PriceChangeConfirmationListener
 import com.android.billingclient.api.PriceChangeFlowParams
 import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchaseHistoryRecord
 import com.android.billingclient.api.PurchaseHistoryResponseListener
+import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.SkuDetailsResponseListener
 import com.pixite.android.billingx.DebugBillingClient.ClientState.CLOSED
@@ -92,6 +95,11 @@ class DebugBillingClient(
     return BillingResult.newBuilder().setResponseCode(this).build()
   }
 
+  @BillingResponseCode
+  private fun Int.toBillingResult(debugMessage: String): BillingResult {
+    return BillingResult.newBuilder().setResponseCode(this).setDebugMessage(debugMessage).build()
+  }
+
   private fun createBillingResult(@BillingResponseCode billingResponseCode: Int): BillingResult {
     return BillingResult.newBuilder().setResponseCode(billingResponseCode).build()
   }
@@ -153,8 +161,9 @@ class DebugBillingClient(
 
   override fun launchBillingFlow(activity: Activity, params: BillingFlowParams): BillingResult {
     val intent = Intent(activity, DebugBillingActivity::class.java)
-    intent.putExtra(DebugBillingActivity.REQUEST_SKU_TYPE, params.skuType)
-    intent.putExtra(DebugBillingActivity.REQUEST_SKU, params.sku)
+    val skuDetails: List<SkuDetails> = params.zzj()
+    val skuDetailsJson: Array<String> = skuDetails.map { it.originalJson }.toTypedArray()
+    intent.putExtra(DebugBillingActivity.REQUEST_SKU_DETAILS, skuDetailsJson)
     activity.startActivity(intent)
     return BillingResponseCode.OK.toBillingResult()
   }
@@ -167,13 +176,37 @@ class DebugBillingClient(
       return
     }
     backgroundExecutor.execute {
-      val history = queryPurchases(skuType)
       listener.onPurchaseHistoryResponse(
-              history.responseCode.toBillingResult(),
+              BillingResponseCode.OK.toBillingResult(),
               billingStore.getPurchaseHistoryRecords(skuType)
       )
     }
   }
+
+  override fun queryPurchasesAsync(skuType: String, listener: PurchasesResponseListener) {
+    if (!isReady) {
+      listener.onQueryPurchasesResponse(
+              BillingResponseCode.SERVICE_DISCONNECTED.toBillingResult(),
+              emptyList()
+      )
+      return
+    }
+    if (skuType.isBlank()) {
+      val debugMessage = "Please provide a valid SKU type."
+      listener.onQueryPurchasesResponse(
+              BillingResponseCode.DEVELOPER_ERROR
+                      .toBillingResult(debugMessage),
+              emptyList()
+      )
+      logger.w(debugMessage)
+      return
+    }
+    listener.onQueryPurchasesResponse(
+            BillingResponseCode.OK.toBillingResult(),
+            billingStore.getPurchases(skuType).purchasesList.orEmpty()
+    )
+  }
+
 
   override fun querySkuDetailsAsync(
       params: SkuDetailsParams, listener: SkuDetailsResponseListener
@@ -212,6 +245,10 @@ class DebugBillingClient(
       billingStore.acknowledgePurchase(acknowledgePurchaseParams.purchaseToken)
       acknowledgePurchaseResponseListener
               .onAcknowledgePurchaseResponse(BillingResponseCode.OK.toBillingResult())
+  }
+
+  override fun getConnectionState(): Int {
+    return billingStore.getConnectionState()
   }
 
   // Supplied for easy Java interop.
