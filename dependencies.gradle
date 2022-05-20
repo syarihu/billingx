@@ -1,17 +1,16 @@
 ext {
-  compileSdkVersion = 30
-  buildToolsVersion = "30.0.2"
+  compileSdkVersion = 32
   minSdkVersion = 19
-  targetSdkVersion = 30
+  targetSdkVersion = 32
 
-  def lifecycleVersion = '2.3.1'
+  def lifecycleVersion = '2.4.1'
 
   libs = [
 
       androidJson               : 'com.vaadin.external.google:android-json:0.0.20131108.vaadin1',
       androidTestRunner         : 'androidx.test:runner:1.3.0',
-      appCompat                 : 'androidx.appcompat:appcompat:1.2.0',
-      localBroadcastManager     : 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0',
+      appCompat                 : 'androidx.appcompat:appcompat:1.4.1',
+      localBroadcastManager     : 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0',
       archLifecycleCommon       : "androidx.lifecycle:lifecycle-common:${lifecycleVersion}",
       archLifecycleCompiler     : "androidx.lifecycle:lifecycle-compiler:${lifecycleVersion}",
       archLifecycleViewModel    : "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}",
@@ -19,8 +18,8 @@ ext {
       archLifecycleRuntime      : "androidx.lifecycle:lifecycle-runtime:${lifecycleVersion}",
       billingClient             : 'com.android.billingclient:billing:4.0.0',
       billingX                  : project(':library'),
-      constraintLayout          : 'androidx.constraintlayout:constraintlayout:2.0.4',
-      design                    : 'com.google.android.material:material:1.3.0',
+      constraintLayout          : 'androidx.constraintlayout:constraintlayout:2.1.4',
+      design                    : 'com.google.android.material:material:1.6.0',
       espressoCore              : 'androidx.test.espresso:espresso-core:3.1.0',
       junit                     : 'junit:junit:4.12',
       kotlinStdlib              : "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
@@ -29,7 +28,7 @@ ext {
       kotlinRuntime             : "org.jetbrains.kotlin:kotlin-runtime:$kotlin_version",
       kotlinTest                : "org.jetbrains.kotlin:kotlin-test:$kotlin_version",
       mockitoKotlin             : "org.mockito.kotlin:mockito-kotlin:3.2.0",
-      threeTenABP               : 'com.jakewharton.threetenabp:threetenabp:1.0.5',
+      threeTenABP               : 'com.jakewharton.threetenabp:threetenabp:1.2.2',
       truth                     : "com.google.truth:truth:0.34",
   ]
 }
