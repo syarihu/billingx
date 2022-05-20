@@ -1,14 +1,7 @@
 package com.pixite.android.billingx
 
 import android.content.SharedPreferences
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClient.SkuType
-import com.android.billingclient.api.InternalPurchasesResult
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.Purchase.PurchasesResult
-import com.android.billingclient.api.PurchaseHistoryRecord
-import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -26,10 +19,11 @@ class BillingStoreImpl(private val prefs: SharedPreferences) : BillingStore(){
         .orEmpty()
   }
 
-  override fun getPurchases(@SkuType skuType: String): PurchasesResult {
-    return InternalPurchasesResult(BillingClient.BillingResponseCode.OK,
-        prefs.getString(KEY_PURCHASES, "[]")?.toPurchaseList()
-            ?.filter { it.signature.endsWith(skuType) })
+  override fun getPurchases(@BillingClient.SkuType skuType: String): List<Purchase> {
+    return prefs.getString(KEY_PURCHASES, "[]")
+            ?.toPurchaseList()
+            ?.filter { it.signature.endsWith(skuType) }
+            .orEmpty()
   }
 
   override fun getPurchaseHistoryRecords(skuType: String): List<PurchaseHistoryRecord> {
