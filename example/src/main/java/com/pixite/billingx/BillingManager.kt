@@ -92,6 +92,7 @@ class BillingManager(private val activity: FragmentActivity,
     val validPurchases = purchasesList.filter { purchase ->
       purchase.skus.any { validSkus.contains(it) }
     }
+
     // look for active subscriptions
     val activeSubscription = validPurchases.find { it.isAutoRenewing }
     if (activeSubscription != null) {

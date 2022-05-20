@@ -65,11 +65,11 @@ class DebugBillingActivity : AppCompatActivity() {
       return
     }
     val items = BillingStore.defaultStore(this)
-            .getSkuDetails(SkuDetailsParams.newBuilder()
-                    .setType(skuType)
-                    .setSkusList(skus)
-                    .build())
-            .associateBy { it.sku }
+        .getSkuDetails(SkuDetailsParams.newBuilder()
+            .setType(skuType)
+            .setSkusList(skus)
+            .build())
+        .associate { it.sku to it }
     // TODO If you want to create a Multi-line subscriptions screen, modify this process
     val firstSku = skus[0]
     val firstSkuDetails = items[firstSku] ?: return
