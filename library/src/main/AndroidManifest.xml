@@ -3,6 +3,7 @@
 
   <application>
     <activity android:name="com.pixite.android.billingx.DebugBillingActivity"
+        android:exported="false"
         android:theme="@style/BillingX.Dialog"/>
   </application>
 </manifest>
