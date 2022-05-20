@@ -16,7 +16,7 @@ ext {
       archLifecycleViewModel    : "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}",
       archLifecycleLiveData     : "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}",
       archLifecycleRuntime      : "androidx.lifecycle:lifecycle-runtime:${lifecycleVersion}",
-      billingClient             : 'com.android.billingclient:billing:4.0.0',
+      billingClient             : 'com.android.billingclient:billing:5.0.0',
       billingX                  : project(':library'),
       constraintLayout          : 'androidx.constraintlayout:constraintlayout:2.1.4',
       design                    : 'com.google.android.material:material:1.6.0',

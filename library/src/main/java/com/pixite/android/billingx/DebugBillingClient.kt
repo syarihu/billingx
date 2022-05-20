@@ -13,13 +13,18 @@ import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ConsumeResponseListener
-import com.android.billingclient.api.InternalPurchasesResult
+import com.android.billingclient.api.InAppMessageParams
+import com.android.billingclient.api.InAppMessageResponseListener
 import com.android.billingclient.api.PriceChangeConfirmationListener
 import com.android.billingclient.api.PriceChangeFlowParams
+import com.android.billingclient.api.ProductDetailsResponseListener
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchaseHistoryResponseListener
 import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchaseHistoryParams
+import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.SkuDetailsResponseListener
@@ -77,6 +82,7 @@ class DebugBillingClient(
       purchasesUpdatedListener.onPurchasesUpdated(createBillingResult(responseCode), purchases)
     }
   }
+
   @BillingResponseCode
   private fun Int.toBillingResult(): BillingResult {
     return BillingResult.newBuilder().setResponseCode(this).build()
@@ -161,6 +167,35 @@ class DebugBillingClient(
     return BillingResponseCode.OK.toBillingResult()
   }
 
+  override fun showInAppMessages(
+      activity: Activity,
+      inAppMessageParams: InAppMessageParams,
+      inAppmessageResponseListener: InAppMessageResponseListener
+  ): BillingResult {
+    TODO("Not yet implemented")
+  }
+
+  override fun queryPurchasesAsync(
+      queryPurchasesParams: QueryPurchasesParams,
+      purchasesResponseListener: PurchasesResponseListener
+  ) {
+    TODO("Not yet implemented")
+  }
+
+  override fun queryProductDetailsAsync(
+      queryProductDetailsParams: QueryProductDetailsParams,
+      productDetailsResponseListener: ProductDetailsResponseListener
+  ) {
+    TODO("Not yet implemented")
+  }
+
+  override fun queryPurchaseHistoryAsync(
+      queryPurchaseHistoryParams: QueryPurchaseHistoryParams,
+      purchaseHistoryResponseListener: PurchaseHistoryResponseListener
+  ) {
+    TODO("Not yet implemented")
+  }
+
   override fun queryPurchaseHistoryAsync(
       skuType: String, listener: PurchaseHistoryResponseListener
   ) {
@@ -195,11 +230,10 @@ class DebugBillingClient(
       return
     }
     listener.onQueryPurchasesResponse(
-            BillingResponseCode.OK.toBillingResult(),
-            billingStore.getPurchases(skuType).purchasesList.orEmpty()
+        BillingResponseCode.OK.toBillingResult(),
+        billingStore.getPurchases(skuType)
     )
   }
-
 
   override fun querySkuDetailsAsync(
       params: SkuDetailsParams, listener: SkuDetailsResponseListener
@@ -213,27 +247,17 @@ class DebugBillingClient(
     }
   }
 
-  override fun queryPurchases(@SkuType skuType: String): Purchase.PurchasesResult {
-    if (!isReady) {
-      return InternalPurchasesResult(BillingResponseCode.SERVICE_DISCONNECTED, null)
-    }
-    if (skuType.isBlank()) {
-      logger.w("Please provide a valid SKU type.")
-      return InternalPurchasesResult(BillingResponseCode.DEVELOPER_ERROR, /* purchasesList */ null)
-    }
-    return billingStore.getPurchases(skuType)
-  }
-
   override fun launchPriceChangeConfirmationFlow(
-          activity: Activity,
-          priceChangeFlowParams: PriceChangeFlowParams,
-          priceChangeConfirmationListener: PriceChangeConfirmationListener) {
+      activity: Activity,
+      priceChangeFlowParams: PriceChangeFlowParams,
+      priceChangeConfirmationListener: PriceChangeConfirmationListener
+  ) {
     throw NotImplementedError("This method is not supported")
   }
 
   override fun acknowledgePurchase(
-          acknowledgePurchaseParams: AcknowledgePurchaseParams,
-          acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener
+      acknowledgePurchaseParams: AcknowledgePurchaseParams,
+      acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener
   ) {
       billingStore.acknowledgePurchase(acknowledgePurchaseParams.purchaseToken)
       acknowledgePurchaseResponseListener

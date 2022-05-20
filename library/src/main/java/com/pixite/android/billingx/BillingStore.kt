@@ -34,7 +34,7 @@ abstract class BillingStore {
 
   abstract fun addPurchase(purchase: Purchase): BillingStore
   abstract fun clearPurchases(): BillingStore
-  abstract fun getPurchases(@BillingClient.SkuType skuType: String): Purchase.PurchasesResult
+  abstract fun getPurchases(@BillingClient.SkuType skuType: String): List<Purchase>
   abstract fun getPurchaseHistoryRecords(@BillingClient.SkuType skuType: String): List<PurchaseHistoryRecord>
   abstract fun getPurchaseByToken(purchaseToken: String): Purchase?
   abstract fun removePurchase(purchaseToken: String): BillingStore

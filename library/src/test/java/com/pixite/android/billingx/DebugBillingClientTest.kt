@@ -11,7 +11,6 @@ import com.android.billingclient.api.BillingClient.FeatureType
 import com.android.billingclient.api.BillingClient.SkuType
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.InternalPurchasesResult
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchaseHistoryRecord
 import com.android.billingclient.api.PurchaseHistoryResponseListener
@@ -112,8 +111,8 @@ class DebugBillingClientTest {
       on { applicationContext } doReturn application
     }
     store = mock {
-      on { getPurchases(eq(SkuType.INAPP)) } doReturn InternalPurchasesResult(BillingResponseCode.OK, listOf(inappPurchase1, inappPurchase2))
-      on { getPurchases(eq(SkuType.SUBS)) } doReturn InternalPurchasesResult(BillingResponseCode.OK, listOf(subsPurchase1, subsPurchase2))
+      on { getPurchases(eq(SkuType.INAPP)) } doReturn listOf(inappPurchase1, inappPurchase2)
+      on { getPurchases(eq(SkuType.SUBS)) } doReturn listOf(subsPurchase1, subsPurchase2)
       on { getPurchaseHistoryRecords(eq(SkuType.INAPP)) } doReturn listOf(inappPurchaseHistoryRecord1, inappPurchaseHistoryRecord2)
       on { getPurchaseHistoryRecords(eq(SkuType.SUBS)) } doReturn listOf(subsPurchaseHistoryRecord1, subsPurchaseHistoryRecord2)
       on { getSkuDetails(any()) } doAnswer {
@@ -164,30 +163,6 @@ class DebugBillingClientTest {
     assertThat(client.isReady).isTrue()
     assertThat(client.isFeatureSupported(FeatureType.SUBSCRIPTIONS).responseCode)
         .isEqualTo(BillingResponseCode.OK)
-  }
-
-  @Test fun queryPurchasesReturnsDisconnected() {
-    val response = client.queryPurchases("com.foo")
-    assertThat(response.responseCode).isEqualTo(BillingResponseCode.SERVICE_DISCONNECTED)
-    assertThat(response.purchasesList).isNull()
-  }
-
-  @Test fun queryPurchasesReturnsSavedSubscriptions() {
-    client.startConnection(emptyStateListener)
-
-    val response = client.queryPurchases(SkuType.SUBS)
-    assertThat(response.responseCode).isEqualTo(BillingResponseCode.OK)
-    assertThat(response.purchasesList?.get(0)).isEqualTo(subsPurchase1)
-    assertThat(response.purchasesList?.get(1)).isEqualTo(subsPurchase2)
-  }
-
-  @Test fun queryPurchasesReturnsSavedInAppPurchases() {
-    client.startConnection(emptyStateListener)
-
-    val response = client.queryPurchases(SkuType.INAPP)
-    assertThat(response.responseCode).isEqualTo(BillingResponseCode.OK)
-    assertThat(response.purchasesList?.get(0)).isEqualTo(inappPurchase1)
-    assertThat(response.purchasesList?.get(1)).isEqualTo(inappPurchase2)
   }
 
   @Test fun querySkuDetailsAsyncReturnsDisconnected() {
