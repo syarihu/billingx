@@ -29,7 +29,7 @@ ext {
       kotlinRuntime             : "org.jetbrains.kotlin:kotlin-runtime:$kotlin_version",
       kotlinTest                : "org.jetbrains.kotlin:kotlin-test:$kotlin_version",
       mockitoKotlin             : "org.mockito.kotlin:mockito-kotlin:3.2.0",
-      threeTenABP               : 'com.jakewharton.threetenabp:threetenabp:1.0.5',
+      threeTenABP               : 'com.jakewharton.threetenabp:threetenabp:1.2.2',
       truth                     : "com.google.truth:truth:0.34",
   ]
 }
