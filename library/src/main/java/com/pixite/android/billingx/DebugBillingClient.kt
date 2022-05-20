@@ -5,7 +5,29 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.android.billingclient.api.*
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
+import com.android.billingclient.api.ConsumeResponseListener
+import com.android.billingclient.api.InAppMessageParams
+import com.android.billingclient.api.InAppMessageResponseListener
+import com.android.billingclient.api.PriceChangeConfirmationListener
+import com.android.billingclient.api.PriceChangeFlowParams
+import com.android.billingclient.api.ProductDetailsResponseListener
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchaseHistoryResponseListener
+import com.android.billingclient.api.PurchasesResponseListener
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchaseHistoryParams
+import com.android.billingclient.api.QueryPurchasesParams
+import com.android.billingclient.api.SkuDetails
+import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.SkuDetailsResponseListener
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -226,15 +248,16 @@ class DebugBillingClient(
   }
 
   override fun launchPriceChangeConfirmationFlow(
-          activity: Activity,
-          priceChangeFlowParams: PriceChangeFlowParams,
-          priceChangeConfirmationListener: PriceChangeConfirmationListener) {
+      activity: Activity,
+      priceChangeFlowParams: PriceChangeFlowParams,
+      priceChangeConfirmationListener: PriceChangeConfirmationListener
+  ) {
     throw NotImplementedError("This method is not supported")
   }
 
   override fun acknowledgePurchase(
-          acknowledgePurchaseParams: AcknowledgePurchaseParams,
-          acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener
+      acknowledgePurchaseParams: AcknowledgePurchaseParams,
+      acknowledgePurchaseResponseListener: AcknowledgePurchaseResponseListener
   ) {
       billingStore.acknowledgePurchase(acknowledgePurchaseParams.purchaseToken)
       acknowledgePurchaseResponseListener
